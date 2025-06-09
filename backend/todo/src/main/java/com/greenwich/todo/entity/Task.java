@@ -1,48 +1,51 @@
 package com.greenwich.todo.entity;
 
 
+import com.greenwich.todo.util.Priority;
+import com.greenwich.todo.util.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "Task")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Title is required")
-    @Size(max = 100, message = "Title must not exceed 100 characters")
     @Column(name = "title", nullable = false, columnDefinition = "NVARCHAR(100)")
     private String title;
 
-    @NotBlank(message = "Description is required")
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
-
-    @Column(name = "completed", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean completed;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
-    @NotNull(message = "Todolist is required")
     @ManyToOne
     @JoinColumn(name = "todolist_id", nullable = false)
     private Todolist todolist;
 
-    public Task() {
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, columnDefinition = "ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED')")
+    private Status status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", nullable = false, columnDefinition = "ENUM('LOW', 'MEDIUM', 'HIGH')")
+    private Priority priority;
 
 }

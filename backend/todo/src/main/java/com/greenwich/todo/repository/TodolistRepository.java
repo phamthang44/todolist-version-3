@@ -1,4 +1,7 @@
 package com.greenwich.todo.repository;
 
-public interface TodolistRepository {
+import com.greenwich.todo.entity.Todolist;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TodolistRepository extends JpaRepository<Todolist, Long> {
 }
