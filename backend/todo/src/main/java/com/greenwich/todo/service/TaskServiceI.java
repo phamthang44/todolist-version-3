@@ -1,6 +1,7 @@
 package com.greenwich.todo.service;
 
 import com.greenwich.todo.dto.request.TaskRequestDTO;
+import com.greenwich.todo.dto.request.TaskUpdateDTO;
 import com.greenwich.todo.dto.response.TaskResponseDTO;
 import com.greenwich.todo.util.Priority;
 import com.greenwich.todo.util.Status;
@@ -12,7 +13,8 @@ public interface TaskServiceI {
 
     TaskResponseDTO updateTask(Long id, TaskRequestDTO taskRequestDTO);
     TaskResponseDTO getTaskById(Long id);
-    void deleteTask(Long id);
+    TaskResponseDTO updateTaskPartial(Long id, TaskUpdateDTO taskUpdateDTO);
+    boolean deleteTask(Long id);
     TaskResponseDTO[] getAllTasksByTodolistId(Long todolistId);
     TaskResponseDTO[] getAllTasksByStatusAndPriority(Long todolistId, Status status, Priority priority);
     TaskResponseDTO[] getAllTasksByStatus(Long todolistId, Status status);

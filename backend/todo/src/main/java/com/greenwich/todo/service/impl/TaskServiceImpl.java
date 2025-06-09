@@ -1,9 +1,11 @@
 package com.greenwich.todo.service.impl;
 
 import com.greenwich.todo.dto.request.TaskRequestDTO;
+import com.greenwich.todo.dto.request.TaskUpdateDTO;
 import com.greenwich.todo.dto.response.TaskResponseDTO;
 import com.greenwich.todo.entity.Task;
 import com.greenwich.todo.entity.Todolist;
+import com.greenwich.todo.exception.ResourceNotFoundException;
 import com.greenwich.todo.repository.TaskRepository;
 import com.greenwich.todo.service.TaskServiceI;
 import com.greenwich.todo.util.Priority;
@@ -26,7 +28,7 @@ public class TaskServiceImpl implements TaskServiceI {
 
     private final TaskRepository taskRepository;
     private final TodolistServiceImpl todolistService;
-
+    
     // Spring tự động inject repository khi tạo bean service
     public TaskServiceImpl(TaskRepository taskRepository, TodolistServiceImpl todolistService) {
         this.taskRepository = taskRepository;
@@ -45,7 +47,7 @@ public class TaskServiceImpl implements TaskServiceI {
     @Override
     @Transactional
     public TaskResponseDTO updateTask(Long id, TaskRequestDTO taskRequestDTO) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+        Task task = findTaskById(id);
 
         task.setTitle(taskRequestDTO.getTitle());
         task.setDescription(taskRequestDTO.getDescription());
@@ -63,15 +65,47 @@ public class TaskServiceImpl implements TaskServiceI {
     }
 
     @Override
+    @Transactional
+    public TaskResponseDTO updateTaskPartial(Long id, TaskUpdateDTO taskUpdateDTO) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (taskUpdateDTO.getTitle() != null) {
+            task.setTitle(taskUpdateDTO.getTitle());
+        }
+        if (taskUpdateDTO.getDescription() != null) {
+            task.setDescription(taskUpdateDTO.getDescription());
+        }
+        if (taskUpdateDTO.getStatus() != null) {
+            task.setStatus(taskUpdateDTO.getStatus());
+        }
+        if (taskUpdateDTO.getPriority() != null) {
+            task.setPriority(taskUpdateDTO.getPriority());
+        }
+        if (taskUpdateDTO.getTodolistId() != null) {
+            task.setTodolist(this.todolistService.findTodolistById(taskUpdateDTO.getTodolistId()));
+        }
+        Task saved = taskRepository.save(task);
+        return convertToTaskResponseDTO(saved);
+    }
+
+    @Override
     public TaskResponseDTO getTaskById(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+        Task task = findTaskById(id);
         return convertToTaskResponseDTO(task);
     }
 
     @Override
-    public void deleteTask(Long id) {
-
+    @Transactional
+    public boolean deleteTask(Long id) {
+        if(taskRepository.existsById(id)) {
+//            throw new RuntimeException("Task not found with id: " + id);
+            taskRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
+
 
     @Override
     public TaskResponseDTO[] getAllTasksByTodolistId(Long todolistId) {
@@ -112,7 +146,12 @@ public class TaskServiceImpl implements TaskServiceI {
                 .priority(task.getPriority())
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
+                .todoListId(task.getTodolist().getId())
                 .build();
     }
 
+    private Task findTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+    }
 }
