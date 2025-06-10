@@ -1,4 +1,4 @@
 package com.greenwich.todo.service;
 
-public class TaskService {
+public interface UserServiceI {
 }

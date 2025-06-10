@@ -2,18 +2,22 @@ package com.greenwich.todo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "User")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "username", nullable = false, unique = true, columnDefinition = "NVARCHAR(50)")

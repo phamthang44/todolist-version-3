@@ -5,33 +5,38 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 //import com.greenwich.todo.entity.User;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "TodoList")
 public class Todolist {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
-    @Size(max = 100, message = "Name must not exceed 100 characters")
-    @Column(name = "name", nullable = false, columnDefinition = "NVARCHAR(100)")
-    private String name;
+    @Column(name = "title", nullable = false, columnDefinition = "NVARCHAR(100)")
+    private String title;
 
     @NotBlank(message = "Description is required")
     @Column(name = "description", nullable = true, columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    private LocalDate createdAt;
 
     @NotNull
     @ManyToOne
