@@ -31,7 +31,17 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("api-task-service-1")
                 .packagesToScan("com.greenwich.todo.controller")
+                .pathsToMatch("/api/v1/task/**")
                 .build();
 
+    }
+
+    @Bean
+    public GroupedOpenApi todolistApi() {
+        return GroupedOpenApi.builder()
+                .group("api-todolist-service")
+                .packagesToScan("com.greenwich.todo.controller")
+                .pathsToMatch("/api/v1/todolist/**")
+                .build();
     }
 }
