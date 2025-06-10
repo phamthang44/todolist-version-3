@@ -8,9 +8,11 @@ import com.greenwich.todo.entity.Todolist;
 import com.greenwich.todo.exception.ResourceNotFoundException;
 import com.greenwich.todo.repository.TaskRepository;
 import com.greenwich.todo.service.TaskServiceI;
+import com.greenwich.todo.service.TodolistUtilService;
 import com.greenwich.todo.util.Priority;
 import com.greenwich.todo.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,12 @@ import java.util.function.Function;
 public class TaskServiceImpl implements TaskServiceI {
 
     private final TaskRepository taskRepository;
-    private final TodolistServiceImpl todolistService;
+
+    @Lazy
+    private final TodolistUtilService todolistService;
     
     // Spring tự động inject repository khi tạo bean service
-    public TaskServiceImpl(TaskRepository taskRepository, TodolistServiceImpl todolistService) {
+    public TaskServiceImpl(TaskRepository taskRepository, TodolistUtilService todolistService) {
         this.taskRepository = taskRepository;
         this.todolistService = todolistService;
     }
@@ -53,7 +57,7 @@ public class TaskServiceImpl implements TaskServiceI {
         task.setDescription(taskRequestDTO.getDescription());
         task.setStatus(taskRequestDTO.getStatus());
         task.setPriority(taskRequestDTO.getPriority());
-        task.setTodolist(todolistService.findTodolistById(taskRequestDTO.getTodolistId())); // nếu cần
+        task.setTodolist(todolistService.findTodolistObjById(taskRequestDTO.getTodolistId())); // nếu cần
 
         Task updatedTask = taskRepository.save(task);
         Task savedTask = taskRepository.save(updatedTask);
@@ -83,7 +87,7 @@ public class TaskServiceImpl implements TaskServiceI {
             task.setPriority(taskUpdateDTO.getPriority());
         }
         if (taskUpdateDTO.getTodolistId() != null) {
-            task.setTodolist(this.todolistService.findTodolistById(taskUpdateDTO.getTodolistId()));
+            task.setTodolist(this.todolistService.findTodolistObjById(taskUpdateDTO.getTodolistId()));
         }
         Task saved = taskRepository.save(task);
         return convertToTaskResponseDTO(saved);
@@ -133,7 +137,7 @@ public class TaskServiceImpl implements TaskServiceI {
         task.setDescription(taskRequestDTO.getDescription());
         task.setStatus(taskRequestDTO.getStatus());
         task.setPriority(taskRequestDTO.getPriority());
-        task.setTodolist(todolistService.findTodolistById(taskRequestDTO.getTodolistId()));
+        task.setTodolist(todolistService.findTodolistObjById(taskRequestDTO.getTodolistId()));
         return task;
     }
 

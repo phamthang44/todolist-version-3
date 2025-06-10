@@ -30,20 +30,17 @@ public class Todolist {
     @Column(name = "title", nullable = false, columnDefinition = "NVARCHAR(100)")
     private String title;
 
-    @NotBlank(message = "Description is required")
     @Column(name = "description", nullable = true, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDate createdAt;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotEmpty
     @OneToMany(mappedBy = "todolist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 

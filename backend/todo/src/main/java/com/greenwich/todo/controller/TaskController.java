@@ -5,16 +5,14 @@ import com.greenwich.todo.dto.request.TaskUpdateDTO;
 import com.greenwich.todo.dto.response.ResponseData;
 import com.greenwich.todo.dto.response.ResponseError;
 import com.greenwich.todo.dto.response.TaskResponseDTO;
-import com.greenwich.todo.entity.Todolist;
-import com.greenwich.todo.exception.GlobalExceptionHandler;
 import com.greenwich.todo.exception.ResourceNotFoundException;
 import com.greenwich.todo.service.impl.TaskServiceImpl;
-import com.greenwich.todo.util.Priority;
-import com.greenwich.todo.util.Status;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,11 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Validated
-@RequestMapping("/api/task")
+@RequestMapping("/api/v1/task")
 @Slf4j
 @Tag(name = "Task Controller", description = "API for task management")
 public class TaskController {
 
+    @Lazy
     TaskServiceImpl taskService;
 
     public TaskController(TaskServiceImpl taskService) {
