@@ -44,4 +44,13 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/v1/todolist/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi userApi() {
+        return GroupedOpenApi.builder()
+                .group("api-user-service")
+                .packagesToScan("com.greenwich.todo.controller")
+                .pathsToMatch("/api/v1/user/**")
+                .build();
+    }
 }

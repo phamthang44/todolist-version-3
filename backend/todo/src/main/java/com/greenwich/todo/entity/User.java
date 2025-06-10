@@ -1,5 +1,6 @@
 package com.greenwich.todo.entity;
 
+import com.greenwich.todo.util.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -32,9 +33,11 @@ public class User {
     @Column(name = "role", nullable = false, columnDefinition = "NVARCHAR(10)")
     private String role;
 
-    @NotEmpty
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todolist> todoLists = new ArrayList<>();
 
+    @Column(name = "status", nullable = false, columnDefinition = "ENUM('ACTIVE', 'BANNED')")
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
 }
