@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Date;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends Throwable {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class, HttpMessageNotReadableException.class, NoResourceFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleValidationException(Exception ex, WebRequest request) {
         System.out.println("====================> handleException");
@@ -38,6 +39,9 @@ public class GlobalExceptionHandler extends Throwable {
         } else if (ex instanceof HttpMessageNotReadableException) {
             message = "Malformed JSON request";
             errorResponse.setError("Malformed JSON request");
+        } else if (ex instanceof NoResourceFoundException) {
+            message = "Resource not found";
+            errorResponse.setError("Resource not found");
         }
 
         errorResponse.setMessage(message);
