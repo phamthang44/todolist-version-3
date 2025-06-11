@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserServiceI {
            //some logic security here to check if is a guest or not is an admin or not
            //default for role field should be USER;
            newUser.setRole("USER");
-           newUser.setUserStatus(UserStatus.ACTIVE);
+           newUser.setUserStatus(UserStatus.valueOf(String.valueOf(UserStatus.ACTIVE))); // Default to ACTIVE if not provided
            User savedUser = userRepository.save(newUser);
 
            return UserResponseDTO.builder()
@@ -187,6 +187,7 @@ public class UserServiceImpl implements UserServiceI {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .role(user.getRole())
+                .status(user.getUserStatus())
                 .build();
     }
 }

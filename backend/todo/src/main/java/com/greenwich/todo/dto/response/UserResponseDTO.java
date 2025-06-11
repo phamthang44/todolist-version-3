@@ -1,5 +1,7 @@
 package com.greenwich.todo.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.greenwich.todo.util.UserStatus;
 import lombok.*;
 
@@ -14,6 +16,9 @@ public class UserResponseDTO {
     private String username;
     private String email;
     private String role;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserStatus status;
 
 }
